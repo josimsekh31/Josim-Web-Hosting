@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Josim Free Web Host</title>
+  <style>
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      text-align: center;
+      padding: 30px;
+    }
+
+    .upload-box {
+      border: 2px dashed #444;
+      padding: 20px;
+      margin: 20px auto;
+      width: 90%;
+      max-width: 500px;
+      background: #111;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      margin-top: 15px;
+      background-color: #00ff99;
+      color: black;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .loading-bar {
+      margin: 20px auto;
+      width: 300px;
+      height: 20px;
+      background: #222;
+      border: 1px solid #555;
+      position: relative;
+      display: none;
+    }
+
+    .loading-fill {
+      height: 100%;
+      width: 0%;
+      background: lime;
+      animation: loading 10s linear forwards;
+    }
+
+    @keyframes loading {
+      0% { width: 0%; }
+      100% { width: 100%; }
+    }
+
+    #successMsg {
+      display: none;
+      margin-top: 20px;
+      color: lime;
+      font-size: 16px;
+    }
+
+    .url-box {
+      display: none;
+      margin-top: 10px;
+    }
+
+    .copy-btn {
+      margin-left: 10px;
+      padding: 5px 10px;
+      background: #0f0;
+      border: none;
+      cursor: pointer;
+    }
+
+    iframe {
+      width: 100%;
+      height: 400px;
+      margin-top: 20px;
+      border: none;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Josim Free Web Hosting</h1>
+
+  <div class="upload-box">
+    <p>Drag & Drop or Select HTML/ZIP/CSS/JS file</p>
+    <input type="file" id="fileInput">
+    <br>
+    <button class="btn" onclick="startHosting()">Host Site</button>
+
+    <div class="loading-bar" id="loadingBar">
+      <div class="loading-fill" id="loadingFill"></div>
+    </div>
+
+    <div id="successMsg">Site Hosted Successfully!</div>
+
+    <div class="url-box" id="urlBox">
+      <span id="hostedUrl">https://your-github-username.github.io/your-repo-name/filename.html</span>
+      <button class="copy-btn" onclick="copyURL()">Copy</button>
+    </div>
+
+    <iframe id="livePreview"></iframe>
+  </div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const livePreview = document.getElementById('livePreview');
+
+    fileInput.addEventListener('change', () => {
+      const file = fileInput.files[0];
+      if (file && file.name.endsWith('.html')) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          livePreview.style.display = 'block';
+          livePreview.srcdoc = reader.result;
+        };
+        reader.readAsText(file);
+      } else {
+        livePreview.style.display = 'none';
+      }
+    });
+
+    function startHosting() {
+      document.getElementById('loadingBar').style.display = 'block';
+      document.getElementById('loadingFill').style.width = '0%';
+      document.getElementById('successMsg').style.display = 'none';
+      document.getElementById('urlBox').style.display = 'none';
+
+      // Trigger animation
+      document.getElementById('loadingFill').style.animation = 'loading 10s linear forwards';
+
+      setTimeout(() => {
+        document.getElementById('successMsg').style.display = 'block';
+        document.getElementById('urlBox').style.display = 'block';
+      }, 10000);
+    }
+
+    function copyURL() {
+      const text = document.getElementById('hostedUrl').innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("URL copied!");
+      });
+    }
+  </script>
+
+</body>
+</html>
